@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combat Engine Studio - Executable Game Development Suite</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: #0d1117;
+            color: #f0f6fc;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .engine-studio {
+            display: grid;
+            grid-template-columns: 60px 280px 1fr 320px;
+            grid-template-rows: 35px 1fr 25px;
+            grid-template-areas: 
+                "sidebar toolbar main-toolbar properties-toolbar"
+                "sidebar assets main-content properties"
+                "sidebar status-bar status-bar status-bar";
+            height: 100vh;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+        }
+
+        /* Main Toolbar */
+        .main-toolbar {
+            grid-area: main-toolbar;
+            background: linear-gradient(135deg, #21262d, #30363d);
+            border-bottom: 1px solid #21262d;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: #161b22;
+            border-right: 1px solid #21262d;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            gap: 8px;
+        }
+
+        .sidebar-btn {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #21262d, #30363d);
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #7d8590;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-btn:hover, .sidebar-btn.active {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            border-color: #238636;
+            color: #ffffff;
+            transform: translateX(2px);
+        }
+
+        /* Assets Panel */
+        .assets-panel {
+            grid-area: assets;
+            background: #0d1117;
+            border-right: 1px solid #21262d;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .asset-category {
+            margin-bottom: 16px;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #21262d, #30363d);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #7d8590;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .category-items {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .asset-item {
+            background: linear-gradient(135deg, #161b22, #21262d);
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 8px 6px;
+            cursor: grab;
+            font-size: 10px;
+            text-align: center;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .asset-item:hover {
+            background: linear-gradient(135deg, #1f6feb, #0969da);
+            border-color: #1f6feb;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(31, 111, 235, 0.3);
+        }
+
+        .asset-item:active {
+            cursor: grabbing;
+            transform: scale(0.98);
+        }
+
+        .asset-icon {
+            font-size: 16px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            grid-area: main-content;
+            background: #0d1117;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Tabbed Interface */
+        .content-tabs {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 35px;
+            background: #161b22;
+            border-bottom: 1px solid #21262d;
+            display: flex;
+            align-items: center;
+        }
+
+        .content-tab {
+            background: transparent;
+            border: none;
+            color: #7d8590;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 12px;
+            border-right: 1px solid #21262d;
+            transition: all 0.2s;
+        }
+
+        .content-tab:hover {
+            background: #21262d;
+            color: #f0f6fc;
+        }
+
+        .content-tab.active {
+            background: #0d1117;
+            color: #58a6ff;
+            border-bottom: 2px solid #1f6feb;
+        }
+
+        /* Canvas Area */
+        .game-canvas {
+            position: absolute;
+            top: 35px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 25px 25px, #21262d 1px, transparent 1px),
+                radial-gradient(circle at 75px 75px, #21262d 0.5px, transparent 0.5px);
+            background-size: 50px 50px, 25px 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-canvas.drag-over {
+            background-color: rgba(31, 111, 235, 0.1);
+            box-shadow: inset 0 0 0 2px #1f6feb;
+        }
+
+        /* IDE/Code Editor */
+        .code-editor {
+            position: absolute;
+            top: 35px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0d1117;
+            display: none;
+        }
+
+        .editor-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-toolbar {
+            background: #161b22;
+            border-bottom: 1px solid #21262d;
+            padding: 8px 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .code-area {
+            flex: 1;
+            background: #0d1117;
+            border: none;
+            color: #f0f6fc;
+            padding: 16px;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+        }
+
+        /* Combat Knife Mod Creator */
+        .knife-creator {
+            position: absolute;
+            top: 35px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0d1117;
+            display: none;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .mod-section {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #58a6ff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Properties Panel */
+        .properties-panel {
+            grid-area: properties;
+            background: #0d1117;
+            border-left: 1px solid #21262d;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .prop-section {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .prop-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #7d8590;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .prop-field {
+            margin-bottom: 8px;
+        }
+
+        .prop-label {
+            font-size: 11px;
+            color: #7d8590;
+            margin-bottom: 2px;
+        }
+
+        .prop-input {
+            width: 100%;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 3px;
+            padding: 6px 8px;
+            color: #f0f6fc;
+            font-size: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .prop-input:focus {
+            outline: none;
+            border-color: #1f6feb;
+            box-shadow: 0 0 0 1px #1f6feb;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #21262d, #30363d);
+            border: 1px solid #30363d;
+            color: #f0f6fc;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #1f6feb, #0969da);
+            border-color: #1f6feb;
+        }
+
+        .btn.success {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            border-color: #238636;
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #da3633, #cf222e);
+            border-color: #da3633;
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, #1f6feb, #0969da);
+            border-color: #1f6feb;
+        }
+
+        /* Game Objects */
+        .game-object {
+            position: absolute;
+            cursor: move;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .game-object:hover {
+            border-color: #1f6feb;
+            box-shadow: 0 0 0 1px #1f6feb;
+        }
+
+        .game-object.selected {
+            border-color: #f79000;
+            box-shadow: 0 0 0 2px #f79000;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            grid-area: status-bar;
+            background: #161b22;
+            border-top: 1px solid #21262d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            font-size: 11px;
+            color: #7d8590;
+        }
+
+        /* Sandbox Indicator */
+        .sandbox-indicator {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: #ffffff;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .sandbox-indicator.secure::before {
+            content: "🔒";
+            font-size: 12px;
+        }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #161b22; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bounce-in {
+            animation: bounceIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sandbox-indicator secure">
+        SECURE SANDBOX MODE
+    </div>
+
+    <div class="engine-studio">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-btn active" onclick="switchTab('canvas')" title="Scene Editor">
+                🎮
+            </div>
+            <div class="sidebar-btn" onclick="switchTab('code')" title="Code IDE">
+                💻
+            </div>
+            <div class="sidebar-btn" onclick="switchTab('knife')" title="Combat Knife Mods">
+                🗡️
+            </div>
+            <div class="sidebar-btn" onclick="showAssetStore()" title="Asset Store">
+                🏪
+            </div>
+            <div class="sidebar-btn" onclick="showSettings()" title="Settings">
+                ⚙️
+            </div>
+            <div style="margin-top: auto;">
+                <div class="sidebar-btn" onclick="exportGame()" title="Export Game">
+                    📦
+                </div>
+            </div>
+        </div>
+
+        <!-- Assets Panel -->
+        <div class="assets-panel">
+            <div class="asset-category">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    🌍 Environments
+                </div>
+                <div class="category-items">
+                    <div class="asset-item" draggable="true" data-type="forest" data-size="200x200">
+                        <span class="asset-icon">🌲</span>
+                        Forest
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="desert" data-size="200x200">
+                        <span class="asset-icon">🏜️</span>
+                        Desert
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="cave" data-size="200x200">
+                        <span class="asset-icon">🕳️</span>
+                        Cave
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="city" data-size="200x200">
+                        <span class="asset-icon">🏙️</span>
+                        City
+                    </div>
+                </div>
+            </div>
+
+            <div class="asset-category">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    ⚔️ Combat Elements
+                </div>
+                <div class="category-items">
+                    <div class="asset-item" draggable="true" data-type="player" data-size="32x32">
+                        <span class="asset-icon">👤</span>
+                        Player
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="enemy" data-size="32x32">
+                        <span class="asset-icon">👹</span>
+                        Enemy
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="knife" data-size="24x24">
+                        <span class="asset-icon">🗡️</span>
+                        Knife
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="armor" data-size="32x32">
+                        <span class="asset-icon">🛡️</span>
+                        Armor
+                    </div>
+                </div>
+            </div>
+
+            <div class="asset-category">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    🏗️ Structures
+                </div>
+                <div class="category-items">
+                    <div class="asset-item" draggable="true" data-type="wall" data-size="64x64">
+                        <span class="asset-icon">🧱</span>
+                        Wall
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="door" data-size="32x64">
+                        <span class="asset-icon">🚪</span>
+                        Door
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="platform" data-size="128x32">
+                        <span class="asset-icon">⬜</span>
+                        Platform
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="stairs" data-size="64x64">
+                        <span class="asset-icon">🪜</span>
+                        Stairs
+                    </div>
+                </div>
+            </div>
+
+            <div class="asset-category">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    ✨ Effects & Audio
+                </div>
+                <div class="category-items">
+                    <div class="asset-item" draggable="true" data-type="fire" data-size="32x32">
+                        <span class="asset-icon">🔥</span>
+                        Fire
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="explosion" data-size="64x64">
+                        <span class="asset-icon">💥</span>
+                        Explosion
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="sound" data-size="16x16">
+                        <span class="asset-icon">🔊</span>
+                        Audio
+                    </div>
+                    <div class="asset-item" draggable="true" data-type="light" data-size="48x48">
+                        <span class="asset-icon">💡</span>
+                        Light
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Toolbar -->
+        <div class="main-toolbar">
+            <button class="btn primary" onclick="newProject()">🆕 New</button>
+            <button class="btn" onclick="saveProject()">💾 Save</button>
+            <button class="btn" onclick="loadProject()">📂 Load</button>
+            <span style="border-left: 1px solid #30363d; height: 20px; margin: 0 8px;"></span>
+            <button class="btn success" onclick="runGame()">▶️ Run</button>
+            <button class="btn danger" onclick="stopGame()">⏹️ Stop</button>
+            <button class="btn" onclick="debugGame()">🐛 Debug</button>
+            <span style="border-left: 1px solid #30363d; height: 20px; margin: 0 8px;"></span>
+            <button class="btn" onclick="undoAction()">↶ Undo</button>
+            <button class="btn" onclick="redoAction()">↷ Redo</button>
+            <span style="margin-left: auto; font-size: 11px; color: #7d8590;">
+                Combat Engine Studio v3.0 | Sandboxed Environment
+            </span>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Content Tabs -->
+            <div class="content-tabs">
+                <button class="content-tab active" onclick="switchTab('canvas')">🎮 Scene Editor</button>
+                <button class="content-tab" onclick="switchTab('code')">💻 Code IDE</button>
+                <button class="content-tab" onclick="switchTab('knife')">🗡️ Knife Mods</button>
+            </div>
+
+            <!-- Scene Editor Canvas -->
+            <div class="game-canvas" id="gameCanvas">
+                <!-- Game objects will be dynamically placed here -->
+            </div>
+
+            <!-- Code Editor -->
+            <div class="code-editor" id="codeEditor">
+                <div class="editor-container">
+                    <div class="editor-toolbar">
+                        <button class="btn" onclick="runCode()">▶️ Execute</button>
+                        <button class="btn" onclick="formatCode()">🎨 Format</button>
+                        <button class="btn" onclick="validateCode()">✅ Validate</button>
+                        <button class="btn" onclick="exportCode()">📤 Export</button>
+                        <span style="margin-left: auto; font-size: 10px; color: #7d8590;">
+                            Sandboxed JavaScript Runtime
+                        </span>
+                    </div>
+                    <textarea class="code-area" id="codeArea" placeholder="// Combat Engine - Sandboxed JavaScript IDE
+// Your code is executed in a secure sandbox environment
+// All game creation libraries are pre-loaded
+
+// Example: Create a simple combat system
+class CombatSystem {
+    constructor() {
+        this.weapons = [];
+        this.combatants = [];
+    }
+    
+    addWeapon(name, damage, range, speed) {
+        this.weapons.push({
+            name: name,
+            damage: damage,
+            range: range,
+            attackSpeed: speed,
+            durability: 100
+        });
+    }
+    
+    createKnifeMod(config) {
+        return {
+            type: 'knife',
+            damage: config.damage || 25,
+            range: config.range || 50,
+            speed: config.speed || 1.5,
+            special: config.special || 'none',
+            material: config.material || 'steel',
+            enchantments: config.enchantments || []
+        };
+    }
+}
+
+// Initialize combat system
+const combat = new CombatSystem();
+
+// Create custom knife mod
+const customKnife = combat.createKnifeMod({
+    damage: 35,
+    range: 60,
+    speed: 2.0,
+    special: 'bleeding',
+    material: 'titanium',
+    enchantments: ['sharpness', 'lightweight']
+});
+
+console.log('Custom knife created:', customKnife);"></textarea>
+                </div>
+            </div>
+
+            <!-- Combat Knife Mod Creator -->
+            <div class="knife-creator" id="knifeCreator">
+                <div class="mod-section">
+                    <div class="section-title">
+                        🗡️ Knife Design Studio
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div>
+                            <div class="prop-field">
+                                <div class="prop-label">Knife Name</div>
+                                <input type="text" class="prop-input" id="knifeName" placeholder="Enter knife name" value="Custom Combat Knife">
+                            </div>
+                            <div class="prop-field">
+                                <div class="prop-label">Base Damage</div>
+                                <input type="number" class="prop-input" id="knifeDamage" value="25" min="1" max="100">
+                            </div>
+                            <div class="prop-field">
+                                <div class="prop-label">Attack Range</div>
+                                <input type="number" class="prop-input" id="knifeRange" value="50" min="10" max="200">
+                            </div>
+                            <div class="prop-field">
+                                <div class="prop-label">Attack Speed</div>
+                                <input type="number" class="prop-input" id="knifeSpeed" value="1.5" min="0.1" max="5" step="0.1">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="prop-field">
+                                <div class="prop-label">Material</div>
+                                <select class="prop-input" id="knifeMaterial">
+                                    <option value="steel">Steel</option>
+                                    <option value="titanium">Titanium</option>
+                                    <option value="carbon">Carbon Fiber</option>
+                                    <option value="obsidian">Obsidian</option>
+                                    <option value="mythril">Mythril</option>
+                                </select>
+                            </div>
+                            <div class="prop-field">
+                                <div class="prop-label">Special Ability</div>
+                                <select class="prop-input" id="knifeSpecial">
+                                    <option value="none">None</option>
+                                    <option value="bleeding">Bleeding</option>
+                                    <option value="poison">Poison</option>
+                                    <option value="fire">Fire Damage</option>
+                                    <option value="ice">Ice Damage</option>
+                                    <option value="lightning">Lightning</option>
+                                </select>
+                            </div>
+                            <div class="prop-field">
+                                <div class="prop-label">Durability</div>
+                                <input type="number" class="prop-input" id="knifeDurability" value="100" min="1" max="1000">
+                            </div>
+                            <div class="prop-field">
+                                <button class="btn primary" onclick="generateKnifeMod()" style="width: 100%;">
+                                    ⚡ Generate Knife Mod
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mod-section">
+                    <div class="section-title">
+                        ⚡ Enchantments & Modifiers
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="enchant_sharpness"> Sharpness (+10 dmg)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="enchant_speed"> Swift Strike (+0.5 speed)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="enchant_reach"> Extended Reach (+25 range)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="enchant_lifesteal"> Life Steal (5% heal)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="enchant_critical"> Critical Hit (15% chance)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="enchant_unbreaking"> Unbreaking (+50% durability)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mod-section">
+                    <div class="section-title">
+                        📊 Knife Preview & Stats
+                    </div>
+                    <div id="knifePreview" style="background: #21262d; padding: 16px; border-radius: 6px; font-family: monospace;">
+                        <!-- Knife stats will be displayed here -->
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 8px;">
+                        <button class="btn success" onclick="saveKnifeMod()">💾 Save Mod</button>
+                        <button class="btn" onclick="testKnifeInGame()">🎮 Test in Game</button>
+                        <button class="btn" onclick="exportKnifeMod()">📤 Export Mod</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties Panel -->
+        <div class="properties-panel">
+            <div class="prop-section">
+                <div class="prop-title">🎯 Selection</div>
+                <div id="selectionInfo" style="font-size: 11px; color: #7d8590; font-style: italic;">
+                    No object selected
+                </div>
+            </div>
+
+            <div class="prop-section" id="objectProperties" style="display: none;">
+                <div class="prop-title">📝 Object Properties</div>
+                <div class="prop-field">
+                    <div class="prop-label">Name</div>
+                    <input type="text" class="prop-input" id="objName">
+                </div>
+                <div class="prop-field">
+                    <div class="prop-label">X Position</div>
+                    <input type="number" class="prop-input" id="objX">
+                </div>
+                <div class="prop-field">
+                    <div class="prop-label">Y Position</div>
+                    <input type="number" class="prop-input" id="objY">
+                </div>
+                <div class="prop-field">
+                    <div class="prop-label">Width</div>
+                    <input type="number" class="prop-input" id="objWidth">
+                </div>
+                <div class="prop-field">
+                    <div class="prop-label">Height</div>
+                    <input type="number" class="
