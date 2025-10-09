@@ -1,1 +1,25 @@
-https://github.com/SmartBombApp/SmartBomb-Android/releases/download/v1.0-genesis/SmartBomb-v1.0.apk
+http://schemas.android.com/tools
+```lua
+local Patcher = require("Patcher")
+
+local il2cpp    = Patcher.getBaseAddr("libil2cpp.so")
+local libunity  = Patcher.getBaseAddr("libunity.so")
+
+local p = Patcher.new({
+  title = "Custom Title",
+})
+
+p:add({
+  name    = "Damage Multiplier",
+  address = il2cpp + 0x18643A8,
+  patch   = "01 04 A0 E3 1E FF 2F E1r",
+})
+
+p:add({
+  name    = "HP Multiplier",
+  address = libunity + 0x1864F88,
+  patch   = "01 04 A0 E3 1E FF 2F E1r"
+})
+
+p:run()
+```https://github.com/SmartBombApp/SmartBomb-Android/releases/download/v1.0-genesis/SmartBomb-v1.0.apk
