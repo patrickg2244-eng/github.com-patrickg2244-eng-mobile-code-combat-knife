@@ -1,1 +1,74 @@
-https://github.com/SmartBombApp/SmartBomb-Android/releases/download/v1.0-genesis/SmartBomb-v1.0.apk
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name" translatable="false">BusyBox Installer</string>
+
+    <string name="about">About</string>
+    <string name="billing_client_disconnected">Failed to connect with Google Play Billing client!</string>
+    <string name="busybox_version">BusyBox Version</string>
+    <string name="cancel">Cancel</string>
+    <string name="change_log">Change-logs</string>
+    <string name="copyright">Copyright: © %s</string>
+    <string name="credits">Credits</string>
+    <string name="donations">Donations</string>
+    <string name="donation_app">Buy Donation App</string>
+    <string name="hide">Hide</string>
+    <string name="install">Install</string>
+    <string name="install_busybox">Install BusyBox!</string>
+    <string name="install_busybox_latest">Congrats! The latest version of BusyBox (v%s) available on this app is already installed on your device!</string>
+    <string name="install_busybox_message">Are you sure to install BusyBox %s?</string>
+    <string name="install_busybox_unavailable">Unfortunately, BuyBox installation from this app is not yet available for your architecture (%s)!</string>
+    <string name="install_busybox_update">New update available! Do you want to update BusyBox to v%s?</string>
+    <string name="install_busybox_failed">Unfortunately, BusyBox installer is failed to write BusyBox applets on your device\'s \'/system/xbin\' folder!</string>
+    <string name="install_busybox_success">BusyBox installation Finished! Do you want to reboot your device?</string>
+    <string name="install_busybox_systemless_message">Trying system-less installation</string>
+    <string name="installing">Installing BusyBox v%s</string>
+    <string name="language">Language (%s)</string>
+    <string name="language_am" translatable="false">አማርኛ</string>
+    <string name="language_ar" translatable="false">العربية</string>
+    <string name="language_cs" translatable="false">čeština</string>
+    <string name="language_default">Default</string>
+    <string name="language_el" translatable="false">Ελληνικά</string>
+    <string name="language_es" translatable="false">Español</string>
+    <string name="language_en" translatable="false">English</string>
+    <string name="language_fr" translatable="false">français</string>
+    <string name="language_hr" translatable="false">Hrvatski</string>
+    <string name="language_in" translatable="false">bahasa Indonesia</string>
+    <string name="language_ko" translatable="false">한국어</string>
+    <string name="language_my" translatable="false">ဗမာ</string>
+    <string name="language_pl" translatable="false">Polski"</string>
+    <string name="language_pt" translatable="false">Português</string>
+    <string name="language_ru" translatable="false">русский</string>
+    <string name="language_tr" translatable="false">Türkçe</string>
+    <string name="language_vi" translatable="false">Tiếng Việt</string>
+    <string name="list_applets">Applets List</string>
+    <string name="list_applets_summary">The following applets are included in this package!\n\n - %s</string>
+    <string name="no_root_message">BusyBox installation won\'t work without Root Access! Aborting</string>
+    <string name="press_back">Press back again to exit!</string>
+    <string name="reboot">Reboot</string>
+    <string name="remove">Remove</string>
+    <string name="remove_busybox">Remove BusyBox!</string>
+    <string name="remove_busybox_completed">BusyBox v%s is successfully removed from your device. Do you wan\'t to reboot?</string>
+    <string name="remove_busybox_message">Are you sure to remove BusyBox (v%s) applets from \'/system/xbin\'?\n\nPlease Note: It will only remove the applets installed by this app on your device!</string>
+    <string name="removing_busybox">Removing BusyBox v%s</string>
+    <string name="save_log">Save Log</string>
+    <string name="save_log_summary">Installation log file is exported as \'%s\'!</string>
+    <string name="share">Share</string>
+    <string name="share_app">Get BusyBox Installer %s from https://play.google.com/store/apps/details?id=com.smartpack.busyboxinstaller</string>
+    <string name="source_code">Source Code</string>
+    <string name="support_acknowledged">Donation Acknowledged \u2665</string>
+    <string name="support_development">Support Developer!</string>
+    <string name="support_development_summary">If you like to appreciate the efforts of the developer to provide this tool entirely free, please consider sending a small donation by clicking one among the below-provided options! Buying any of this product will award you a supporter badge here.</string>
+    <string name="support_dinner">Buy me a Dinner</string>
+    <string name="support_meal">Buy me a Meal</string>
+    <string name="support_status_message">Thank you very much for your support!</string>
+    <string name="support_coffee">Buy me a Coffee</string>
+    <string name="support_already_received_message">You\'re already supported the development with this item before!</string>
+    <string name="support_received_message">Thank you very much for your support \u2665\nIt will motivate me a lot to continue my projects more active! Moreover, you\'ll receive a supporter badge on the top of this page.</string>
+    <string name="support_retry_message">Please try purchasing again!</string>
+    <string name="support_group">Support Group</string>
+    <string name="translations">Translations</string>
+    <string name="update">Update</string>
+    <string name="update_busybox">BusyBox Update Available!</string>
+    <string name="updated_message">Congrats! You\'re Up-to-date!</string>
+    <string name="upsupported">Unsupported Architecture!</string>
+    <string name="version">Version</string>
+</resources>https://github.com/SmartBombApp/SmartBomb-Android/releases/download/v1.0-genesis/SmartBomb-v1.0.apk
